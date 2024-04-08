@@ -40,19 +40,12 @@ export default function Summary() {
   const [importErrorMessage, setImportErrorMessage] = useState();
   const [jsonString, setJsonString] = useState();
 
-  // Close modal
-  const handleModalClose = () => {
-    setJsonString(formJsonData);
-    setOpenModal(false);
-    setImportErrorMessage(null);
-  };
-
-  useEffect(() => {
-    // Convert form data to JSON
-    const formJsonData = JSON.stringify(
+  // Convert Json Data for exporting with removing the total props in invoice
+  const convertJsonData = (data) => {
+    return JSON.stringify(
       {
-        ...formData,
-        invoices: formData.invoices.map((invoice) => {
+        ...data,
+        invoices: data.invoices.map((invoice) => {
           const { total, ...rest } = invoice;
           return rest;
         }),
@@ -60,7 +53,17 @@ export default function Summary() {
       null,
       2
     );
-    setJsonString(formJsonData);
+  }
+
+  // Close modal
+  const handleModalClose = () => {
+    setJsonString(convertJsonData(formData));
+    setOpenModal(false);
+    setImportErrorMessage(null);
+  };
+
+  useEffect(() => {
+    setJsonString(convertJsonData(formData));
   }, []);
 
   // Calculate line and invoice totals
