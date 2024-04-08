@@ -32,12 +32,14 @@ const FormLine = styled("div")({
 });
 
 export default function Invoice({ invoiceIndex }) {
+  // Get form data and dispatch function from context
   const { formData, formDataDispatch, currencies } = useFormContext();
   const invoice = formData.invoices[invoiceIndex];
   const [isLineComplete, setIsLineComplete] = useState(false);
   const [duplicatedLine, setDuplicatedLine] = useState();
   const [apiErrorMessage, setApiErrorMessage] = useState();
 
+  // Check for duplicate lines and determine if all lines are complete
   useEffect(() => {
     try {
       checkDuplicates(formData.invoices[invoiceIndex].lines);
@@ -55,6 +57,7 @@ export default function Invoice({ invoiceIndex }) {
     }
   }, [invoice.lines]);
 
+  // Fetch currency conversions and calculate total when lines, currency, and date are complete
   useEffect(() => {
     if (isLineComplete && invoice.currency && invoice.date) {
       getCurrencyConversions(
@@ -76,12 +79,14 @@ export default function Invoice({ invoiceIndex }) {
     }
   }, [invoice.lines, isLineComplete, invoice.currency, invoice.date]);
 
+  // Add initial invoice if there are none
   useEffect(() => {
     if (formData.invoices.length === 0) {
       formDataDispatch({ type: "ADD_INVOICE" });
     }
   }, [formData]);
 
+  // Function to add a new line to the invoice
   const addLine = () => {
     formDataDispatch({ type: "ADD_LINE", payload: { invoiceIndex } });
   };

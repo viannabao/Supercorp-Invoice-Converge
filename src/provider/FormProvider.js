@@ -1,13 +1,21 @@
-import { createContext, useContext, useReducer, useMemo, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useMemo,
+  useEffect,
+  useState,
+} from "react";
 import dayjs from "dayjs";
 import { getCurrencies } from "../api/currencyService";
 
+// Define the initial state for the form
 const initialState = {
   invoices: [
     {
       currency: "NZD",
       date: "2020-07-07",
-      total: "",
+      total: "", // Placeholder for total, to be calculated later
       lines: [
         { description: "Intel Core i9", currency: "USD", amount: 700 },
         { description: "ASUS ROG Strix", currency: "AUD", amount: 500 },
@@ -16,7 +24,7 @@ const initialState = {
     {
       currency: "EUR",
       date: "2020-07-07",
-      total: "",
+      total: "", // Placeholder for total, to be calculated later
       lines: [
         { description: "Intel Core i9", currency: "USD", amount: 700 },
         { description: "ASUS ROG Strix", currency: "AUD", amount: 500 },
@@ -25,9 +33,11 @@ const initialState = {
   ],
 };
 
+// Reducer function to handle form data updates
 const formDataReducer = (state, action) => {
   switch (action.type) {
     case "ADD_INVOICE":
+      // Add a new invoice to the list
       return {
         ...state,
         invoices: [
@@ -40,6 +50,7 @@ const formDataReducer = (state, action) => {
         ],
       };
     case "ADD_LINE":
+      // Add a new line to a specific invoice
       return {
         ...state,
         invoices: state.invoices.map((invoice, index) =>
@@ -55,6 +66,7 @@ const formDataReducer = (state, action) => {
         ),
       };
     case "REMOVE_LINE":
+      // Remove a line from a specific invoice
       return {
         ...state,
         invoices: state.invoices.map((invoice, invoiceIndex) =>
@@ -69,6 +81,7 @@ const formDataReducer = (state, action) => {
         ),
       };
     case "UPDATE_DATE":
+      // Update the date of a specific invoice
       return {
         ...state,
         invoices: state.invoices.map((invoice, index) =>
@@ -78,6 +91,7 @@ const formDataReducer = (state, action) => {
         ),
       };
     case "UPDATE_CURRENCY":
+      // Update the currency of a specific invoice
       return {
         ...state,
         invoices: state.invoices.map((invoice, index) =>
@@ -87,6 +101,7 @@ const formDataReducer = (state, action) => {
         ),
       };
     case "UPDATE_TOTAL":
+      // Update the total of a specific invoice
       return {
         ...state,
         invoices: state.invoices.map((invoice, index) =>
@@ -96,6 +111,7 @@ const formDataReducer = (state, action) => {
         ),
       };
     case "UPDATE_LINE":
+      // Update a specific line of a specific invoice
       return {
         ...state,
         invoices: state.invoices.map((invoice, invoiceIndex) =>
@@ -112,14 +128,17 @@ const formDataReducer = (state, action) => {
         ),
       };
     case "IMPORT_DATA":
+      // Import data from an external source
       return action.payload.data;
     default:
       return state;
   }
 };
 
+// Create context for the form data
 export const FormContext = createContext(initialState);
 
+// Form provider component to manage form state and currency data
 export const FormProvider = ({ children }) => {
   const [formData, formDataDispatch] = useReducer(
     formDataReducer,
@@ -127,15 +146,22 @@ export const FormProvider = ({ children }) => {
   );
   const [currencies, setCurrencies] = useState();
 
+  // Fetch currencies data when component mounts
   useEffect(() => {
     getCurrencies().then((data) => {
       setCurrencies(data);
     });
   }, []);
-  const value = useMemo(() => ({ formData, currencies, formDataDispatch }), [formData, currencies]);
 
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(
+    () => ({ formData, currencies, formDataDispatch }),
+    [formData, currencies]
+  );
+
+  // Provide form context to children components
   return <FormContext.Provider value={value}>{children}</FormContext.Provider>;
 };
 
-const useFormContext = () => useContext(FormContext);
-export { useFormContext };
+// Custom hook to use form context
+export const useFormContext = () => useContext(FormContext);

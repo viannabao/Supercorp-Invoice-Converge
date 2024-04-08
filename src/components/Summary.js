@@ -31,10 +31,12 @@ const ButtonGroup = styled("div")({
 });
 
 export default function Summary() {
+  // Get form data and dispatch function from context
   const { formData, formDataDispatch, currencies } = useFormContext();
   const [lineTotals, setLineTotals] = useState({});
   const [invoiceTotals, setInvoiceTotals] = useState({});
 
+  // Convert form data to JSON
   const formJsonData = JSON.stringify(
     {
       ...formData,
@@ -50,12 +52,14 @@ export default function Summary() {
   const [importErrorMessage, setImportErrorMessage] = useState();
   const [jsonString, setJsonString] = useState(formJsonData);
 
+  // Close modal
   const handleModalClose = () => {
     setJsonString(formJsonData);
     setOpenModal(false);
     setImportErrorMessage(null);
   };
 
+  // Calculate line and invoice totals
   useEffect(() => {
     const lineGroups = {};
     formData.invoices.forEach((invoice) => {
@@ -86,6 +90,7 @@ export default function Summary() {
     setInvoiceTotals(invoiceGroups);
   }, [formData.invoices]);
 
+  // Import invoice data
   const importInvoice = () => {
     try {
       jsonValidation(jsonString, currencies);

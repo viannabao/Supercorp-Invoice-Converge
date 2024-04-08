@@ -21,13 +21,16 @@ const FormLine = styled("div")({
   marginBottom: "15px",
 });
 
+// Error message for duplicated line item
 const DUPLICATED_ERROR_MESSAGE = "Line item must be unique.";
 
 export default function LineItem({ invoiceIndex, lineIndex, isDuplicated }) {
+  // Get form data and dispatch function from context
   const { formData, formDataDispatch, currencies } = useFormContext();
   const line = formData.invoices[invoiceIndex].lines[lineIndex];
   const [fieldErrorMessage, setFieldErrorMessage] = useState({});
 
+  // Handler to remove line item
   const handleRemoveLine = () => {
     formDataDispatch({
       type: "REMOVE_LINE",
@@ -35,6 +38,7 @@ export default function LineItem({ invoiceIndex, lineIndex, isDuplicated }) {
     });
   };
 
+  // Handler for input change
   const handleInputChange = (field, value) => {
     try {
       if (field === "amount") {
@@ -50,6 +54,7 @@ export default function LineItem({ invoiceIndex, lineIndex, isDuplicated }) {
     });
   };
 
+  // Effect to handle duplicated line items
   useEffect(() => {
     setFieldErrorMessage(
       isDuplicated
@@ -64,6 +69,7 @@ export default function LineItem({ invoiceIndex, lineIndex, isDuplicated }) {
 
   return (
     <FormLine>
+      {/* Description field */}
       <FormField>
         <TextField
           required
@@ -75,6 +81,7 @@ export default function LineItem({ invoiceIndex, lineIndex, isDuplicated }) {
           onChange={(e) => handleInputChange("description", e.target.value)}
         />
       </FormField>
+      {/* Currency field */}
       <FormField size="small">
         <InputLabel>Currency</InputLabel>
         <Select
@@ -93,6 +100,7 @@ export default function LineItem({ invoiceIndex, lineIndex, isDuplicated }) {
             ))}
         </Select>
       </FormField>
+      {/* Amount field */}
       <FormField>
         <TextField
           required
@@ -105,6 +113,7 @@ export default function LineItem({ invoiceIndex, lineIndex, isDuplicated }) {
           onChange={(e) => handleInputChange("amount", e.target.value)}
         />
       </FormField>
+      {/* Remove button */}
       <Button
         variant="outlined"
         onClick={handleRemoveLine}
