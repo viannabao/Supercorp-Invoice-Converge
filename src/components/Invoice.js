@@ -58,7 +58,7 @@ export default function Invoice({ invoiceIndex }) {
   useEffect(() => {
     if (isLineComplete && invoice.currency && invoice.date) {
       getCurrencyConversions(
-        invoice.date,
+        dayjs(invoice.date).format("YYYY-MM-DD"),
         invoice.currency,
         invoice.lines.map((line) => line.currency)
       )
@@ -68,6 +68,7 @@ export default function Invoice({ invoiceIndex }) {
             type: "UPDATE_TOTAL",
             payload: { invoiceIndex, total: total.toFixed(2) },
           });
+          setApiErrorMessage(null);
         })
         .catch((e) => {
           setApiErrorMessage(e.message);
@@ -111,6 +112,7 @@ export default function Invoice({ invoiceIndex }) {
                 })
               }
               format={"DD/MM/YYYY"}
+              maxDate={dayjs()}
               slotProps={{ textField: { size: "small" } }}
             />
           </FormField>
