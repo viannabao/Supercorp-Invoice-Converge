@@ -5,7 +5,7 @@
 Supercorp Pty Ltd has numerous international vendors. Every week, they need to handle multiple invoices from all of them and make various payments in different currencies.
 
 ## Demo
-Latest demo https://supercorp-invoice-converge-8tdr.vercel.app/
+Latest demo [Link Text](https://supercorp-invoice-converge-8tdr.vercel.app/){:target="_blank"}
 
 ## Installations
 
