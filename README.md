@@ -6,16 +6,18 @@ Supercorp Pty Ltd has numerous international vendors. Every week, they need to h
 
 ## Installations
 
-First, run the development server:
+Step 1:
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
 
+Step 2:
 ```bash
 npm run dev
 ```
 
+Step 3:
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Todos

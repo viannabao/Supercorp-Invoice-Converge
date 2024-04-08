@@ -36,21 +36,9 @@ export default function Summary() {
   const [lineTotals, setLineTotals] = useState({});
   const [invoiceTotals, setInvoiceTotals] = useState({});
 
-  // Convert form data to JSON
-  const formJsonData = JSON.stringify(
-    {
-      ...formData,
-      invoices: formData.invoices.map((invoice) => {
-        const { total, ...rest } = invoice;
-        return rest;
-      }),
-    },
-    null,
-    2
-  );
   const [openModal, setOpenModal] = useState(false);
   const [importErrorMessage, setImportErrorMessage] = useState();
-  const [jsonString, setJsonString] = useState(formJsonData);
+  const [jsonString, setJsonString] = useState();
 
   // Close modal
   const handleModalClose = () => {
@@ -58,6 +46,22 @@ export default function Summary() {
     setOpenModal(false);
     setImportErrorMessage(null);
   };
+
+  useEffect(() => {
+    // Convert form data to JSON
+    const formJsonData = JSON.stringify(
+      {
+        ...formData,
+        invoices: formData.invoices.map((invoice) => {
+          const { total, ...rest } = invoice;
+          return rest;
+        }),
+      },
+      null,
+      2
+    );
+    setJsonString(formJsonData);
+  }, []);
 
   // Calculate line and invoice totals
   useEffect(() => {
@@ -88,7 +92,7 @@ export default function Summary() {
     });
 
     setInvoiceTotals(invoiceGroups);
-  }, [formData.invoices]);
+  }, [formData]);
 
   // Import invoice data
   const importInvoice = () => {
